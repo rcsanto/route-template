@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Route Template - Simple</title>
+    <title>Smart Multi-Route Template</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -17,7 +17,7 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
         }
         
@@ -30,6 +30,44 @@
             font-size: 18px;
             margin-bottom: 20px;
             border-radius: 5px;
+        }
+        
+        .upload-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .upload-section h3 {
+            margin: 0 0 15px 0;
+            font-size: 18px;
+        }
+        
+        .upload-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .upload-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 12px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-1px);
         }
         
         .info-section {
@@ -64,6 +102,43 @@
             border: 2px solid #ddd;
             border-radius: 5px;
             font-size: 16px;
+        }
+        
+        .route-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        
+        .route-tab {
+            background: #e0e0e0;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px 5px 0 0;
+            cursor: pointer;
+            font-weight: bold;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+        
+        .route-tab.active {
+            background: #4472C4;
+            color: white;
+        }
+        
+        .route-tab:hover {
+            background: #6c8cd4;
+            color: white;
+        }
+        
+        .route-content {
+            display: none;
+        }
+        
+        .route-content.active {
+            display: block;
         }
         
         .route-header {
@@ -132,6 +207,96 @@
             font-size: 12px;
         }
         
+        .route-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .control-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .select-all {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .deselect-all {
+            background: #f44336;
+            color: white;
+        }
+        
+        .global-controls {
+            background: #fff3e0;
+            border: 2px solid #ff9800;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .global-controls h3 {
+            color: #e65100;
+            margin: 0 0 15px 0;
+        }
+        
+        .global-btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .global-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .global-btn.select-all-routes {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .global-btn.deselect-all-routes {
+            background: #f44336;
+            color: white;
+        }
+        
+        .global-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .section-highlight {
+            background-color: #FFD966;
+            padding: 10px;
+            margin: 10px 0;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 5px;
+        }
+        
+        .section-highlight input {
+            width: 100%;
+            text-align: center;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 16px;
+        }
+        
         .footer-notes {
             background-color: #FFD966;
             padding: 15px;
@@ -168,29 +333,71 @@
             background-color: #0056b3;
         }
         
-        .section-highlight {
-            background-color: #FFD966;
-            padding: 10px;
-            margin: 10px 0;
-            font-weight: bold;
-            text-align: center;
-            border-radius: 5px;
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
         }
         
-        .section-highlight input {
-            width: 100%;
+        .stat-card {
+            background: white;
+            border-radius: 5px;
+            padding: 10px;
             text-align: center;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 3px;
-            font-size: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .stat-number {
+            font-size: 20px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 3px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .route-controls, .global-btn-group {
+                flex-direction: column;
+            }
+            
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            DEPARTMENT OF SANITATION - ROUTE TEMPLATE
+            DEPARTMENT OF SANITATION - SMART ROUTE TEMPLATE
+        </div>
+        
+        <div class="upload-section">
+            <h3>📸 Quick Upload Routes</h3>
+            <div class="upload-buttons">
+                <button class="upload-btn" onclick="document.getElementById('photoInput').click()">
+                    📷 Take Photos
+                </button>
+                <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                    📁 Upload Files
+                </button>
+                <button class="upload-btn" onclick="loadSampleRoutes()">
+                    🧪 Load Sample
+                </button>
+            </div>
+            <p style="font-size: 14px; margin: 10px 0 0 0;">Upload multiple route photos - AI extracts ITSA numbers automatically</p>
+            
+            <input type="file" id="photoInput" multiple accept="image/*" capture="environment" style="display: none;" onchange="handleFileUpload(event)">
+            <input type="file" id="fileInput" multiple accept="image/*,application/pdf" style="display: none;" onchange="handleFileUpload(event)">
         </div>
         
         <div class="info-section">
@@ -253,104 +460,139 @@
             </div>
         </div>
 
-        <div class="route-header">ROUTE DETAILS</div>
-        
-        <div class="table-container">
-            <table id="routeTable">
-                <thead>
-                    <tr>
-                        <th>ITSA</th>
-                        <th>SIDE</th>
-                        <th>STREET</th>
-                        <th>FROM</th>
-                        <th>TO</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="routeTableBody">
-                    <tr>
-                        <td><input type="number" name="itsa" placeholder="57"></td>
-                        <td>
-                            <select name="side">
-                                <option value="">-</option>
-                                <option value="B">B</option>
-                                <option value="R">R</option>
-                                <option value="L">L</option>
-                            </select>
-                        </td>
-                        <td><input type="text" name="street" placeholder="Street Name"></td>
-                        <td><input type="text" name="from" placeholder="From Address"></td>
-                        <td><input type="text" name="to" placeholder="To Address"></td>
-                        <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
-                    </tr>
-                    <tr>
-                        <td><input type="number" name="itsa" placeholder="58"></td>
-                        <td>
-                            <select name="side">
-                                <option value="">-</option>
-                                <option value="B">B</option>
-                                <option value="R">R</option>
-                                <option value="L">L</option>
-                            </select>
-                        </td>
-                        <td><input type="text" name="street" placeholder="Street Name"></td>
-                        <td><input type="text" name="from" placeholder="From Address"></td>
-                        <td><input type="text" name="to" placeholder="To Address"></td>
-                        <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
-                    </tr>
-                    <tr>
-                        <td><input type="number" name="itsa" placeholder="59"></td>
-                        <td>
-                            <select name="side">
-                                <option value="">-</option>
-                                <option value="B">B</option>
-                                <option value="R">R</option>
-                                <option value="L">L</option>
-                            </select>
-                        </td>
-                        <td><input type="text" name="street" placeholder="Street Name"></td>
-                        <td><input type="text" name="from" placeholder="From Address"></td>
-                        <td><input type="text" name="to" placeholder="To Address"></td>
-                        <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
-                    </tr>
-                    <tr>
-                        <td><input type="number" name="itsa" placeholder="60"></td>
-                        <td>
-                            <select name="side">
-                                <option value="">-</option>
-                                <option value="B">B</option>
-                                <option value="R">R</option>
-                                <option value="L">L</option>
-                            </select>
-                        </td>
-                        <td><input type="text" name="street" placeholder="Street Name"></td>
-                        <td><input type="text" name="from" placeholder="From Address"></td>
-                        <td><input type="text" name="to" placeholder="To Address"></td>
-                        <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
-                    </tr>
-                    <tr>
-                        <td><input type="number" name="itsa" placeholder="61"></td>
-                        <td>
-                            <select name="side">
-                                <option value="">-</option>
-                                <option value="B">B</option>
-                                <option value="R">R</option>
-                                <option value="L">L</option>
-                            </select>
-                        </td>
-                        <td><input type="text" name="street" placeholder="Street Name"></td>
-                        <td><input type="text" name="from" placeholder="From Address"></td>
-                        <td><input type="text" name="to" placeholder="To Address"></td>
-                        <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="global-controls hidden" id="globalControls">
+            <h3>🎯 Global Controls</h3>
+            <div class="global-btn-group">
+                <button class="global-btn select-all-routes" onclick="selectAllRoutes()">
+                    ✅ Select All ITSAs
+                </button>
+                <button class="global-btn deselect-all-routes" onclick="deselectAllRoutes()">
+                    ❌ Deselect All ITSAs
+                </button>
+            </div>
         </div>
-        
-        <button class="add-row-btn" onclick="addRow()">+ Add Route Entry</button>
-        
-        <div class="section-highlight">
-            <input type="text" id="sectionNote" placeholder="Add section note (e.g., 'Including 2 Houses From 213 Street to 215 Street')">
+
+        <div class="route-tabs" id="routeTabs">
+            <button class="route-tab active" onclick="switchRoute('manual')" id="tab-manual">
+                ✏️ Manual Entry
+            </button>
+        </div>
+
+        <div class="route-content active" id="route-manual">
+            <div class="route-header">ROUTE DETAILS</div>
+            
+            <div class="route-controls">
+                <button class="control-btn select-all" onclick="selectAllInRoute('manual')">
+                    ✅ Select All
+                </button>
+                <button class="control-btn deselect-all" onclick="deselectAllInRoute('manual')">
+                    ❌ Deselect All
+                </button>
+            </div>
+            
+            <div class="table-container">
+                <table id="routeTable-manual">
+                    <thead>
+                        <tr>
+                            <th>✓</th>
+                            <th>ITSA</th>
+                            <th>SIDE</th>
+                            <th>STREET</th>
+                            <th>FROM</th>
+                            <th>TO</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="routeTableBody-manual">
+                        <tr>
+                            <td><input type="checkbox" class="itsa-checkbox" data-route="manual" data-itsa="57" onchange="updateStats()"></td>
+                            <td><input type="number" name="itsa" placeholder="57" value="57"></td>
+                            <td>
+                                <select name="side">
+                                    <option value="">-</option>
+                                    <option value="B">B</option>
+                                    <option value="R">R</option>
+                                    <option value="L">L</option>
+                                </select>
+                            </td>
+                            <td><input type="text" name="street" placeholder="Street Name"></td>
+                            <td><input type="text" name="from" placeholder="From Address"></td>
+                            <td><input type="text" name="to" placeholder="To Address"></td>
+                            <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" class="itsa-checkbox" data-route="manual" data-itsa="58" onchange="updateStats()"></td>
+                            <td><input type="number" name="itsa" placeholder="58" value="58"></td>
+                            <td>
+                                <select name="side">
+                                    <option value="">-</option>
+                                    <option value="B">B</option>
+                                    <option value="R">R</option>
+                                    <option value="L">L</option>
+                                </select>
+                            </td>
+                            <td><input type="text" name="street" placeholder="Street Name"></td>
+                            <td><input type="text" name="from" placeholder="From Address"></td>
+                            <td><input type="text" name="to" placeholder="To Address"></td>
+                            <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" class="itsa-checkbox" data-route="manual" data-itsa="59" onchange="updateStats()"></td>
+                            <td><input type="number" name="itsa" placeholder="59" value="59"></td>
+                            <td>
+                                <select name="side">
+                                    <option value="">-</option>
+                                    <option value="B">B</option>
+                                    <option value="R">R</option>
+                                    <option value="L">L</option>
+                                </select>
+                            </td>
+                            <td><input type="text" name="street" placeholder="Street Name"></td>
+                            <td><input type="text" name="from" placeholder="From Address"></td>
+                            <td><input type="text" name="to" placeholder="To Address"></td>
+                            <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" class="itsa-checkbox" data-route="manual" data-itsa="60" onchange="updateStats()"></td>
+                            <td><input type="number" name="itsa" placeholder="60" value="60"></td>
+                            <td>
+                                <select name="side">
+                                    <option value="">-</option>
+                                    <option value="B">B</option>
+                                    <option value="R">R</option>
+                                    <option value="L">L</option>
+                                </select>
+                            </td>
+                            <td><input type="text" name="street" placeholder="Street Name"></td>
+                            <td><input type="text" name="from" placeholder="From Address"></td>
+                            <td><input type="text" name="to" placeholder="To Address"></td>
+                            <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" class="itsa-checkbox" data-route="manual" data-itsa="61" onchange="updateStats()"></td>
+                            <td><input type="number" name="itsa" placeholder="61" value="61"></td>
+                            <td>
+                                <select name="side">
+                                    <option value="">-</option>
+                                    <option value="B">B</option>
+                                    <option value="R">R</option>
+                                    <option value="L">L</option>
+                                </select>
+                            </td>
+                            <td><input type="text" name="street" placeholder="Street Name"></td>
+                            <td><input type="text" name="from" placeholder="From Address"></td>
+                            <td><input type="text" name="to" placeholder="To Address"></td>
+                            <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <button class="add-row-btn" onclick="addRow('manual')">+ Add Route Entry</button>
+            
+            <div class="section-highlight">
+                <input type="text" id="sectionNote" placeholder="Add section note (e.g., 'Including 2 Houses From 213 Street to 215 Street')">
+            </div>
         </div>
         
         <div class="footer-notes">
@@ -360,171 +602,201 @@
         </div>
         
         <div class="export-section">
-            <h3>Export Options</h3>
+            <h3>📊 Export Your Routes</h3>
+            
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalRoutes">1</div>
+                    <div class="stat-label">Total Routes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalItsas">5</div>
+                    <div class="stat-label">Total ITSAs</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="completedItsas">0</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="remainingItsas">5</div>
+                    <div class="stat-label">Remaining</div>
+                </div>
+            </div>
+            
             <button class="export-btn" onclick="exportToExcel()">📊 Download Excel File</button>
-            <p><em>Downloads file directly to your phone/computer</em></p>
+            <p><em>Downloads Excel-style file with remaining work only</em></p>
         </div>
     </div>
 
     <script>
-        let rowCounter = 1;
-
-        function addRow() {
-            const tableBody = document.getElementById('routeTableBody');
-            const newRow = tableBody.insertRow();
-            
-            newRow.innerHTML = `
-                <td><input type="number" name="itsa" placeholder="${61 + rowCounter}"></td>
-                <td>
-                    <select name="side">
-                        <option value="">-</option>
-                        <option value="B">B</option>
-                        <option value="R">R</option>
-                        <option value="L">L</option>
-                    </select>
-                </td>
-                <td><input type="text" name="street" placeholder="Street Name"></td>
-                <td><input type="text" name="from" placeholder="From Address"></td>
-                <td><input type="text" name="to" placeholder="To Address"></td>
-                <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
-            `;
-            rowCounter++;
-        }
-
-        function deleteRow(button) {
-            const row = button.parentNode.parentNode;
-            row.parentNode.removeChild(row);
-        }
-
-        function exportToExcel() {
-            try {
-                // Create Excel-compatible HTML content
-                let htmlContent = `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Route Export</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-table { border-collapse: collapse; width: 100%; margin: 10px 0; }
-th, td { border: 1px solid black; padding: 8px; text-align: center; font-size: 10pt; }
-th { background-color: #D9D9D9; font-weight: bold; }
-.yellow { background-color: #FFFF99; font-weight: bold; }
-.title { font-size: 14pt; font-weight: bold; text-align: center; margin: 20px 0; }
-@media print { body { margin: 0.5in; } }
-</style>
-</head>
-<body>`;
-
-                const routeId = document.getElementById('routeId').value || 'QE133';
-                const currentDate = new Date().toLocaleDateString();
-                
-                // Header
-                htmlContent += `<div class="title">THE CITY OF NEW YORK DEPARTMENT OF SANITATION</div>`;
-                
-                // Info table
-                htmlContent += `
-<table>
-<tr>
-<th>ROUTE ID</th><th>DISTRICT</th><th>SECTION</th><th>VEHICLE TYPE</th><th>FUNCTION</th><th>FREQUENCY</th><th>ITSAS</th><th>PHONE</th><th>DATE</th>
-</tr>
-<tr>
-<td>${document.getElementById('routeId').value || ''}</td>
-<td>${document.getElementById('district').value || ''}</td>
-<td>${document.getElementById('section').value || ''}</td>
-<td>${document.getElementById('vehicleType').value || ''}</td>
-<td>${document.getElementById('function').value || ''}</td>
-<td>${document.getElementById('frequency').value || ''} ${document.getElementById('timesPerWeek').value || ''}</td>
-<td>${document.getElementById('itsas').value || ''}</td>
-<td>${document.getElementById('districtPhone').value || ''}</td>
-<td>${currentDate}</td>
-</tr>
-</table>`;
-
-                // Route section
-                htmlContent += `<table><tr><td class="yellow" colspan="5">ROUTE 3</td></tr></table>`;
-                
-                htmlContent += `
-<table>
-<tr>
-<th>ITSA</th><th>SIDE</th><th>STREET</th><th>FROM</th><th>TO</th>
-</tr>`;
-
-                // Add route data
-                const tableBody = document.getElementById('routeTableBody');
-                const rows = tableBody.querySelectorAll('tr');
-                let itsaCounter = 57;
-                let entryCount = 0;
-                
-                rows.forEach(row => {
-                    const inputs = row.querySelectorAll('input');
-                    const selects = row.querySelectorAll('select');
-                    
-                    const hasData = (inputs[1] && inputs[1].value.trim()) || 
-                                   (inputs[2] && inputs[2].value.trim()) || 
-                                   (inputs[3] && inputs[3].value.trim()) ||
-                                   (selects[0] && selects[0].value);
-                    
-                    if (hasData) {
-                        const itsaValue = (inputs[0] && inputs[0].value) ? inputs[0].value : itsaCounter;
-                        htmlContent += `
-<tr>
-<td>${itsaValue}</td>
-<td>${selects[0] ? selects[0].value : ''}</td>
-<td>${inputs[1] ? inputs[1].value : ''}</td>
-<td>${inputs[2] ? inputs[2].value : ''}</td>
-<td>${inputs[3] ? inputs[3].value : ''}</td>
-</tr>`;
-                        itsaCounter++;
-                        entryCount++;
-                    }
-                });
-
-                // Add empty rows
-                for (let i = 0; i < 15; i++) {
-                    htmlContent += `<tr><td></td><td></td><td></td><td></td><td></td></tr>`;
-                }
-
-                htmlContent += `</table>`;
-
-                // Section note
-                const sectionNote = document.getElementById('sectionNote').value;
-                if (sectionNote) {
-                    htmlContent += `<table><tr><td class="yellow" colspan="5">${sectionNote}</td></tr></table>`;
-                }
-
-                // Footer
-                htmlContent += `
-<table>
-<tr><td class="yellow" colspan="5">Complete Route in Order</td></tr>
-<tr><td class="yellow" colspan="5">Service Appropriate Commodity on Baskets, Schools, and Drop Offs on Route</td></tr>
-<tr><td class="yellow" colspan="5">Take and Return Tools - Wear Reflective Safety Compliant Attire</td></tr>
-</table>
-
-</body>
-</html>`;
-
-                // Create downloadable file
-                const blob = new Blob([htmlContent], { type: 'text/html' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = `Route_${routeId}_${currentDate.replace(/\//g, '-')}.html`;
-                
-                // Trigger download
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                
-                // Clean up
-                setTimeout(() => URL.revokeObjectURL(link.href), 1000);
-                
-                alert(`✅ Excel file downloaded!\n\nFound ${entryCount} route entries.\n\n📱 Check your Downloads folder!\n💻 Double-click the file to open with Excel formatting.`);
-                
-            } catch (error) {
-                alert('Export failed: ' + error.message);
-                console.error('Export error:', error);
+        let routes = {
+            manual: {
+                id: 'manual',
+                name: 'Manual Entry',
+                section: '',
+                vehicle: '',
+                function: '',
+                frequency: '',
+                itsas: [],
+                rowCounter: 6
             }
+        };
+        let activeRoute = 'manual';
+
+        function handleFileUpload(event) {
+            const files = event.target.files;
+            if (files.length === 0) return;
+            
+            alert('🤖 Processing files...\n\nIn production, this would use OCR to extract ITSA numbers from your route photos/PDFs automatically.');
+            
+            setTimeout(() => {
+                const sampleRoutes = [
+                    {
+                        id: 'route2',
+                        name: 'Route 2',
+                        section: 'SI013',
+                        vehicle: 'Rear Loader',
+                        function: 'Refuse',
+                        frequency: '2x',
+                        itsas: generateItsaRange(21, 39),
+                        rowCounter: 1
+                    },
+                    {
+                        id: 'route5',
+                        name: 'Route 5',
+                        section: 'SI013',
+                        vehicle: 'Rear Loader',
+                        function: 'Refuse',
+                        frequency: '2x',
+                        itsas: generateItsaRange(79, 103),
+                        rowCounter: 1
+                    }
+                ];
+                
+                sampleRoutes.forEach(route => {
+                    routes[route.id] = route;
+                });
+                
+                displayRoutes();
+                alert(`✅ Success!\n\nExtracted ${sampleRoutes.length} routes:\n• Route 2: ITSAs 21-39\n• Route 5: ITSAs 79-103\n\nClick the route tabs to view each one!`);
+            }, 1500);
         }
-    </script>
-</body>
-</html>
+        
+        function loadSampleRoutes() {
+            const sampleRoutes = [
+                {
+                    id: 'route1',
+                    name: 'Route 1',
+                    section: 'QE133',
+                    vehicle: 'Side Loader',
+                    function: 'Recycling',
+                    frequency: '1x',
+                    itsas: generateItsaRange(1, 20),
+                    rowCounter: 1
+                },
+                {
+                    id: 'route2',
+                    name: 'Route 2',
+                    section: 'SI013',
+                    vehicle: 'Rear Loader',
+                    function: 'Refuse',
+                    frequency: '2x',
+                    itsas: generateItsaRange(21, 39),
+                    rowCounter: 1
+                },
+                {
+                    id: 'route5',
+                    name: 'Route 5',
+                    section: 'SI013',
+                    vehicle: 'Rear Loader',
+                    function: 'Refuse',
+                    frequency: '2x',
+                    itsas: generateItsaRange(79, 103),
+                    rowCounter: 1
+                }
+            ];
+            
+            sampleRoutes.forEach(route => {
+                routes[route.id] = route;
+            });
+            
+            displayRoutes();
+            alert(`✅ Loaded ${sampleRoutes.length} sample routes!\n\nNow you can:\n• Click route tabs to switch between them\n• Check/uncheck ITSAs to mark as completed\n• Use global controls to select all at once\n• Export remaining work as Excel file`);
+        }
+        
+        function generateItsaRange(start, end) {
+            const itsas = [];
+            for (let i = start; i <= end; i++) {
+                itsas.push({
+                    number: i,
+                    completed: false,
+                    street: `Street ${i}`,
+                    from: `From ${i}`,
+                    to: `To ${i}`,
+                    side: 'B'
+                });
+            }
+            return itsas;
+        }
+        
+        function displayRoutes() {
+            const routeTabs = document.getElementById('routeTabs');
+            const globalControls = document.getElementById('globalControls');
+            
+            globalControls.classList.remove('hidden');
+            
+            const manualTab = document.getElementById('tab-manual');
+            routeTabs.innerHTML = '';
+            routeTabs.appendChild(manualTab);
+            
+            Object.values(routes).forEach(route => {
+                if (route.id === 'manual') return;
+                
+                const tab = document.createElement('button');
+                tab.className = 'route-tab';
+                tab.id = `tab-${route.id}`;
+                tab.textContent = `${route.name} (${route.itsas.length})`;
+                tab.onclick = () => switchRoute(route.id);
+                routeTabs.appendChild(tab);
+                
+                createRouteContent(route);
+            });
+            
+            updateStats();
+        }
+        
+        function createRouteContent(route) {
+            const container = document.querySelector('.container');
+            const existingContent = document.getElementById(`route-${route.id}`);
+            if (existingContent) existingContent.remove();
+            
+            const routeContent = document.createElement('div');
+            routeContent.className = 'route-content';
+            routeContent.id = `route-${route.id}`;
+            
+            routeContent.innerHTML = `
+                <div class="route-header">${route.name.toUpperCase()} - ${route.section}</div>
+                
+                <div class="route-controls">
+                    <button class="control-btn select-all" onclick="selectAllInRoute('${route.id}')">
+                        ✅ Select All
+                    </button>
+                    <button class="control-btn deselect-all" onclick="deselectAllInRoute('${route.id}')">
+                        ❌ Deselect All
+                    </button>
+                </div>
+                
+                <div class="table-container">
+                    <table id="routeTable-${route.id}">
+                        <thead>
+                            <tr>
+                                <th>✓</th>
+                                <th>ITSA</th>
+                                <th>SIDE</th>
+                                <th>STREET</th>
+                                <th>FROM</th>
+                                <th>TO</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="routeTableBody-${route.id}">
