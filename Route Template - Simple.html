@@ -132,4 +132,644 @@
             font-size: 12px;
         }
         
-        .footer-notes
+        .footer-notes {
+            background-color: #FFD966;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+        
+        .footer-notes p {
+            margin: 5px 0;
+            font-weight: bold;
+        }
+        
+        .export-section {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .export-options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        @media (min-width: 768px) {
+            .export-options {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        .export-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .export-btn:hover {
+            background-color: #0056b3;
+        }
+        
+        .export-btn.email {
+            background-color: #28a745;
+        }
+        
+        .export-btn.email:hover {
+            background-color: #218838;
+        }
+        
+        .export-btn.download {
+            background-color: #17a2b8;
+        }
+        
+        .export-btn.download:hover {
+            background-color: #138496;
+        }
+        
+        .export-btn.copy {
+            background-color: #6c757d;
+        }
+        
+        .export-btn.copy:hover {
+            background-color: #5a6268;
+        }
+        
+        .section-highlight {
+            background-color: #FFD966;
+            padding: 10px;
+            margin: 10px 0;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 5px;
+        }
+        
+        .section-highlight input {
+            width: 100%;
+            text-align: center;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 16px;
+        }
+        
+        .export-description {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            DEPARTMENT OF SANITATION - ROUTE TEMPLATE
+        </div>
+        
+        <div class="info-section">
+            <div class="info-item">
+                <label>Route ID:</label>
+                <input type="text" id="routeId" placeholder="e.g., QE133">
+            </div>
+            <div class="info-item">
+                <label>District:</label>
+                <input type="text" id="district" placeholder="e.g., QE13">
+            </div>
+            <div class="info-item">
+                <label>Section:</label>
+                <input type="text" id="section" placeholder="e.g., QE133">
+            </div>
+            <div class="info-item">
+                <label>Vehicle Type:</label>
+                <select id="vehicleType">
+                    <option value="">Select...</option>
+                    <option value="Rear Loader">Rear Loader</option>
+                    <option value="Side Loader">Side Loader</option>
+                    <option value="Front Loader">Front Loader</option>
+                </select>
+            </div>
+            <div class="info-item">
+                <label>Function:</label>
+                <select id="function">
+                    <option value="">Select...</option>
+                    <option value="Refuse">Refuse</option>
+                    <option value="Recycling">Recycling</option>
+                    <option value="Organics">Organics</option>
+                </select>
+            </div>
+            <div class="info-item">
+                <label>Frequency:</label>
+                <select id="frequency">
+                    <option value="">Select...</option>
+                    <option value="WS">Weekly Service</option>
+                    <option value="DS">Daily Service</option>
+                    <option value="BS">Bi-weekly Service</option>
+                </select>
+            </div>
+            <div class="info-item">
+                <label>Times per Week:</label>
+                <select id="timesPerWeek">
+                    <option value="">Select...</option>
+                    <option value="1x">1x</option>
+                    <option value="2x">2x</option>
+                    <option value="3x">3x</option>
+                    <option value="5x">5x</option>
+                </select>
+            </div>
+            <div class="info-item">
+                <label>ITSAS:</label>
+                <input type="text" id="itsas" placeholder="e.g., 57-75">
+            </div>
+            <div class="info-item">
+                <label>District Phone:</label>
+                <input type="text" id="districtPhone" placeholder="e.g., (718) 525-7812">
+            </div>
+        </div>
+
+        <div class="route-header">ROUTE DETAILS</div>
+        
+        <div class="table-container">
+            <table id="routeTable">
+                <thead>
+                    <tr>
+                        <th>ITSA</th>
+                        <th>SIDE</th>
+                        <th>STREET</th>
+                        <th>FROM</th>
+                        <th>TO</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="routeTableBody">
+                    <tr>
+                        <td><input type="number" name="itsa" placeholder="57"></td>
+                        <td>
+                            <select name="side">
+                                <option value="">-</option>
+                                <option value="B">B</option>
+                                <option value="R">R</option>
+                                <option value="L">L</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="street" placeholder="Street Name"></td>
+                        <td><input type="text" name="from" placeholder="From Address"></td>
+                        <td><input type="text" name="to" placeholder="To Address"></td>
+                        <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                    </tr>
+                    <tr>
+                        <td><input type="number" name="itsa" placeholder="58"></td>
+                        <td>
+                            <select name="side">
+                                <option value="">-</option>
+                                <option value="B">B</option>
+                                <option value="R">R</option>
+                                <option value="L">L</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="street" placeholder="Street Name"></td>
+                        <td><input type="text" name="from" placeholder="From Address"></td>
+                        <td><input type="text" name="to" placeholder="To Address"></td>
+                        <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                    </tr>
+                    <tr>
+                        <td><input type="number" name="itsa" placeholder="59"></td>
+                        <td>
+                            <select name="side">
+                                <option value="">-</option>
+                                <option value="B">B</option>
+                                <option value="R">R</option>
+                                <option value="L">L</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="street" placeholder="Street Name"></td>
+                        <td><input type="text" name="from" placeholder="From Address"></td>
+                        <td><input type="text" name="to" placeholder="To Address"></td>
+                        <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                    </tr>
+                    <tr>
+                        <td><input type="number" name="itsa" placeholder="60"></td>
+                        <td>
+                            <select name="side">
+                                <option value="">-</option>
+                                <option value="B">B</option>
+                                <option value="R">R</option>
+                                <option value="L">L</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="street" placeholder="Street Name"></td>
+                        <td><input type="text" name="from" placeholder="From Address"></td>
+                        <td><input type="text" name="to" placeholder="To Address"></td>
+                        <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                    </tr>
+                    <tr>
+                        <td><input type="number" name="itsa" placeholder="61"></td>
+                        <td>
+                            <select name="side">
+                                <option value="">-</option>
+                                <option value="B">B</option>
+                                <option value="R">R</option>
+                                <option value="L">L</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="street" placeholder="Street Name"></td>
+                        <td><input type="text" name="from" placeholder="From Address"></td>
+                        <td><input type="text" name="to" placeholder="To Address"></td>
+                        <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <button class="add-row-btn" onclick="addRow()">+ Add Route Entry</button>
+        
+        <div class="section-highlight">
+            <input type="text" id="sectionNote" placeholder="Add section note (e.g., 'Including 2 Houses From 213 Street to 215 Street')">
+        </div>
+        
+        <div class="footer-notes">
+            <p>Complete Route in Order</p>
+            <p>Service Appropriate Commodity on Baskets, Schools, and Drop Offs on Route</p>
+            <p>Take and Return Tools - Wear Reflective Safety Compliant Attire</p>
+        </div>
+        
+        <div class="export-section">
+            <h3>📊 Export Your Route</h3>
+            <p><strong>Choose the method that works best for you:</strong></p>
+            
+            <div class="export-options">
+                <div>
+                    <button class="export-btn email" onclick="emailRoute()">📧 Email Route</button>
+                    <div class="export-description">Opens email automatically with route data</div>
+                </div>
+                
+                <div>
+                    <button class="export-btn download" onclick="downloadRoute()">📱 Download Excel-Style File</button>
+                    <div class="export-description">Opens formatted file that looks like Excel</div>
+                </div>
+                
+                <div>
+                    <button class="export-btn copy" onclick="copyRoute()">📋 Copy Data</button>
+                    <div class="export-description">Copies route text to clipboard</div>
+                </div>
+            </div>
+            
+            <p><em>💡 Try "Download Excel-Style File" - opens beautifully on iPhone!</em></p>
+        </div>
+    </div>
+
+    <script>
+        let rowCounter = 6; // Start at 6 since we have 5 initial rows
+
+        function addRow() {
+            const tableBody = document.getElementById('routeTableBody');
+            const newRow = tableBody.insertRow();
+            
+            newRow.innerHTML = `
+                <td><input type="number" name="itsa" placeholder="${56 + rowCounter}"></td>
+                <td>
+                    <select name="side">
+                        <option value="">-</option>
+                        <option value="B">B</option>
+                        <option value="R">R</option>
+                        <option value="L">L</option>
+                    </select>
+                </td>
+                <td><input type="text" name="street" placeholder="Street Name"></td>
+                <td><input type="text" name="from" placeholder="From Address"></td>
+                <td><input type="text" name="to" placeholder="To Address"></td>
+                <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+            `;
+            rowCounter++;
+        }
+
+        function deleteRow(button) {
+            const row = button.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+        }
+
+        function getRouteData() {
+            const routeId = document.getElementById('routeId').value || 'QE133';
+            const district = document.getElementById('district').value || '';
+            const section = document.getElementById('section').value || '';
+            const vehicleType = document.getElementById('vehicleType').value || '';
+            const functionType = document.getElementById('function').value || '';
+            const frequency = document.getElementById('frequency').value || '';
+            const timesPerWeek = document.getElementById('timesPerWeek').value || '';
+            const itsas = document.getElementById('itsas').value || '';
+            const phone = document.getElementById('districtPhone').value || '';
+            const sectionNote = document.getElementById('sectionNote').value || '';
+            const currentDate = new Date().toLocaleDateString();
+            
+            const tableBody = document.getElementById('routeTableBody');
+            const rows = tableBody.querySelectorAll('tr');
+            let routeEntries = [];
+            let itsaCounter = 57;
+            
+            rows.forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                const selects = row.querySelectorAll('select');
+                
+                const hasData = (inputs[1] && inputs[1].value.trim()) || 
+                               (inputs[2] && inputs[2].value.trim()) || 
+                               (inputs[3] && inputs[3].value.trim()) ||
+                               (selects[0] && selects[0].value);
+                
+                if (hasData) {
+                    routeEntries.push({
+                        itsa: inputs[0] ? inputs[0].value : itsaCounter,
+                        side: selects[0] ? selects[0].value : '',
+                        street: inputs[1] ? inputs[1].value : '',
+                        from: inputs[2] ? inputs[2].value : '',
+                        to: inputs[3] ? inputs[3].value : ''
+                    });
+                    itsaCounter++;
+                }
+            });
+            
+            return {
+                routeId, district, section, vehicleType, functionType, 
+                frequency, timesPerWeek, itsas, phone, sectionNote, 
+                currentDate, routeEntries
+            };
+        }
+
+        function emailRoute() {
+            try {
+                const data = getRouteData();
+                const subject = `Route ${data.routeId} - ${data.currentDate}`;
+                
+                let body = `THE CITY OF NEW YORK DEPARTMENT OF SANITATION%0D%0A`;
+                body += `Route: ${data.routeId}%0D%0A`;
+                body += `District: ${data.district}%0D%0A`;
+                body += `Vehicle: ${data.vehicleType}%0D%0A`;
+                body += `Function: ${data.functionType}%0D%0A`;
+                body += `Date: ${data.currentDate}%0D%0A%0D%0A`;
+                
+                body += `ROUTE ENTRIES:%0D%0A`;
+                body += `ITSA | SIDE | STREET | FROM | TO%0D%0A`;
+                body += `----------------------------------------%0D%0A`;
+                
+                data.routeEntries.forEach(entry => {
+                    body += `${entry.itsa} | ${entry.side} | ${entry.street} | ${entry.from} | ${entry.to}%0D%0A`;
+                });
+                
+                if (data.sectionNote) {
+                    body += `%0D%0ASection Note: ${data.sectionNote}%0D%0A`;
+                }
+                
+                body += `%0D%0AInstructions:%0D%0A`;
+                body += `• Complete Route in Order%0D%0A`;
+                body += `• Service Appropriate Commodity on Baskets, Schools, and Drop Offs on Route%0D%0A`;
+                body += `• Take and Return Tools - Wear Reflective Safety Compliant Attire%0D%0A`;
+                
+                const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${body}`;
+                window.location.href = mailtoLink;
+                
+                alert(`✅ Email opened with route data!\n\nFound ${data.routeEntries.length} route entries.\n\n📧 Send the email to yourself for printing.`);
+                
+            } catch (error) {
+                alert('Email failed. Please try "Download File" instead.');
+                console.error('Email error:', error);
+            }
+        }
+
+        function downloadRoute() {
+            try {
+                const data = getRouteData();
+                
+                // Create iPhone-compatible HTML file that looks like Excel
+                let htmlContent = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Route ${data.routeId} - Excel Style</title>
+<style>
+body { 
+    font-family: Arial, sans-serif; 
+    margin: 20px; 
+    background: white; 
+    color: black;
+}
+.excel-header {
+    background: #4472C4;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 16pt;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+.info-table, .route-table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 15px 0;
+}
+.info-table th, .info-table td,
+.route-table th, .route-table td {
+    border: 2px solid #000000;
+    padding: 8px;
+    text-align: center;
+    font-size: 11pt;
+}
+.info-table th, .route-table th {
+    background-color: #D9D9D9;
+    font-weight: bold;
+}
+.yellow-section {
+    background-color: #FFFF99;
+    font-weight: bold;
+    padding: 10px;
+    text-align: center;
+    border: 2px solid #000000;
+    margin: 10px 0;
+}
+.instructions {
+    background-color: #FFFF99;
+    border: 2px solid #000000;
+    padding: 10px;
+    margin: 15px 0;
+}
+.mobile-instruction {
+    background: #e7f3ff;
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 8px;
+    text-align: center;
+}
+@media print {
+    .mobile-instruction { display: none; }
+    body { margin: 0.5in; }
+}
+</style>
+</head>
+<body>
+
+<div class="mobile-instruction">
+<h3>📱 EXCEL-STYLE ROUTE SHEET</h3>
+<p><strong>This is your formatted route ready for printing!</strong></p>
+<p>📍 Use Safari's Share button → Print or Add to Reading List</p>
+<p>📧 Or use Share → Mail to email to yourself</p>
+</div>
+
+<div class="excel-header">THE CITY OF NEW YORK DEPARTMENT OF SANITATION</div>
+
+<table class="info-table">
+<tr>
+<th>ROUTE ID</th>
+<th>DISTRICT</th>
+<th>SECTION</th>
+<th>VEHICLE TYPE</th>
+<th>FUNCTION</th>
+<th>FREQUENCY</th>
+<th>ITSAS</th>
+<th>PHONE</th>
+<th>DATE</th>
+</tr>
+<tr>
+<td>${data.routeId}</td>
+<td>${data.district}</td>
+<td>${data.section}</td>
+<td>${data.vehicleType}</td>
+<td>${data.functionType}</td>
+<td>${data.frequency} ${data.timesPerWeek}</td>
+<td>${data.itsas}</td>
+<td>${data.phone}</td>
+<td>${data.currentDate}</td>
+</tr>
+</table>
+
+<div class="yellow-section">ROUTE 3</div>
+
+<table class="route-table">
+<tr>
+<th>ITSA</th>
+<th>SIDE</th>
+<th>STREET</th>
+<th>FROM</th>
+<th>TO</th>
+</tr>`;
+
+                // Add route entries
+                data.routeEntries.forEach(entry => {
+                    htmlContent += `
+<tr>
+<td>${entry.itsa}</td>
+<td>${entry.side}</td>
+<td>${entry.street}</td>
+<td>${entry.from}</td>
+<td>${entry.to}</td>
+</tr>`;
+                });
+
+                // Add empty rows for additional entries
+                for (let i = 0; i < 15; i++) {
+                    htmlContent += `<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>`;
+                }
+
+                htmlContent += `</table>`;
+
+                // Add section note if present
+                if (data.sectionNote) {
+                    htmlContent += `<div class="yellow-section">${data.sectionNote}</div>`;
+                }
+
+                // Add instructions
+                htmlContent += `
+<div class="instructions">
+<strong>ROUTE INSTRUCTIONS:</strong><br>
+- Complete Route in Order<br>
+- Service Appropriate Commodity on Baskets, Schools, and Drop Offs on Route<br>
+- Take and Return Tools - Wear Reflective Safety Compliant Attire
+</div>
+
+</body>
+</html>`;
+
+                // For iPhone: Open in new window instead of downloading
+                const newWindow = window.open('', '_blank');
+                if (newWindow) {
+                    newWindow.document.write(htmlContent);
+                    newWindow.document.close();
+                    alert(`✅ Excel-style route opened in new tab!\n\nFound ${data.routeEntries.length} route entries.\n\n📱 Use Safari's Share button to:\n• Print directly\n• Email to yourself\n• Add to Reading List\n• Save to Files app`);
+                } else {
+                    // Fallback: Use data URL
+                    const dataUrl = 'data:text/html;charset=utf-8,' + encodeURIComponent(htmlContent);
+                    window.open(dataUrl, '_blank');
+                    alert(`✅ Excel-style route opened!\n\nFound ${data.routeEntries.length} route entries.\n\n📱 Use Share button to print or email!`);
+                }
+                
+            } catch (error) {
+                alert('Download failed. Please try "Email Route" instead.');
+                console.error('Download error:', error);
+            }
+        }
+
+        function copyRoute() {
+            try {
+                const data = getRouteData();
+                
+                let routeText = `THE CITY OF NEW YORK DEPARTMENT OF SANITATION\n`;
+                routeText += `Route: ${data.routeId}\n`;
+                routeText += `District: ${data.district}\n`;
+                routeText += `Vehicle: ${data.vehicleType}\n`;
+                routeText += `Function: ${data.functionType}\n`;
+                routeText += `Date: ${data.currentDate}\n\n`;
+                
+                routeText += `ROUTE ENTRIES:\n`;
+                routeText += `ITSA | SIDE | STREET | FROM | TO\n`;
+                routeText += `----------------------------------------\n`;
+                
+                data.routeEntries.forEach(entry => {
+                    routeText += `${entry.itsa} | ${entry.side} | ${entry.street} | ${entry.from} | ${entry.to}\n`;
+                });
+                
+                if (data.sectionNote) {
+                    routeText += `\nSection Note: ${data.sectionNote}\n`;
+                }
+                
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(routeText).then(() => {
+                        alert(`✅ Route copied to clipboard!\n\nFound ${data.routeEntries.length} route entries.\n\n📋 Paste into email or document.`);
+                    }).catch(() => {
+                        showCopyModal(routeText, data.routeEntries.length);
+                    });
+                } else {
+                    showCopyModal(routeText, data.routeEntries.length);
+                }
+                
+            } catch (error) {
+                alert('Copy failed. Please try "Email Route" instead.');
+                console.error('Copy error:', error);
+            }
+        }
+
+        function showCopyModal(text, count) {
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
+            
+            const content = document.createElement('div');
+            content.style.cssText = 'background:white;padding:20px;border-radius:10px;max-width:90%;max-height:90%;overflow:auto;';
+            
+            content.innerHTML = `<h3>📋 Route Data (${count} entries)</h3><p><strong>Long-press text → Copy → Email to yourself</strong></p><textarea readonly style="width:100%;height:300px;font-family:monospace;font-size:12px;">${text}</textarea><button onclick="this.closest('div').remove()" style="background:#007bff;color:white;padding:10px 20px;border:none;border-radius:5px;margin-top:10px;">Close</button></td>`;
+            
+            modal.appendChild(content);
+            document.body.appendChild(modal);
+            
+            const textarea = content.querySelector('textarea');
+            textarea.focus();
+            textarea.select();
+        }
+    </script>
+</body>
+</html>
