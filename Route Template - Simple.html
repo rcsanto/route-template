@@ -339,8 +339,8 @@
                 </div>
                 
                 <div>
-                    <button class="export-btn download" onclick="downloadRoute()">📱 Download Excel File</button>
-                    <div class="export-description">Downloads Excel-style file with formatting</div>
+                    <button class="export-btn download" onclick="downloadRoute()">📱 Download Excel-Style File</button>
+                    <div class="export-description">Downloads formatted file that opens like Excel</div>
                 </div>
                 
                 <div>
@@ -349,7 +349,7 @@
                 </div>
             </div>
             
-            <p><em>💡 Try "Email Route" first - it's the easiest!</em></p>
+            <p><em>💡 Try "Download Excel-Style File" - opens beautifully on iPhone!</em></p>
         </div>
     </div>
 
@@ -384,7 +384,6 @@
         }
 
         function getRouteData() {
-            // Collect all route data
             const routeId = document.getElementById('routeId').value || 'QE133';
             const district = document.getElementById('district').value || '';
             const section = document.getElementById('section').value || '';
@@ -397,7 +396,6 @@
             const sectionNote = document.getElementById('sectionNote').value || '';
             const currentDate = new Date().toLocaleDateString();
             
-            // Get route entries
             const tableBody = document.getElementById('routeTableBody');
             const rows = tableBody.querySelectorAll('tr');
             let routeEntries = [];
@@ -434,8 +432,6 @@
         function emailRoute() {
             try {
                 const data = getRouteData();
-                
-                // Create email subject and body
                 const subject = `Route ${data.routeId} - ${data.currentDate}`;
                 
                 let body = `THE CITY OF NEW YORK DEPARTMENT OF SANITATION%0D%0A`;
@@ -462,10 +458,7 @@
                 body += `• Service Appropriate Commodity on Baskets, Schools, and Drop Offs on Route%0D%0A`;
                 body += `• Take and Return Tools - Wear Reflective Safety Compliant Attire%0D%0A`;
                 
-                // Create mailto link
                 const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${body}`;
-                
-                // Open email
                 window.location.href = mailtoLink;
                 
                 alert(`✅ Email opened with route data!\n\nFound ${data.routeEntries.length} route entries.\n\n📧 Send the email to yourself for printing.`);
@@ -480,43 +473,169 @@
             try {
                 const data = getRouteData();
                 
-                // Create SAME Excel-formatted HTML for ALL devices (mobile and desktop)
-                let htmlContent = createFormattedHTML(data);
-                
-                const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                
-                if (isMobile) {
-                    // Mobile: Direct download of Excel-formatted file
-                    const blob = new Blob([htmlContent], { type: 'application/vnd.ms-excel' });
-                    const link = document.createElement('a');
-                    link.href = URL.createObjectURL(blob);
-                    link.download = `Route_${data.routeId}_${data.currentDate.replace(/\//g, '-')}.xls`;
-                    link.style.display = 'none';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    
-                    setTimeout(() => URL.revokeObjectURL(link.href), 1000);
-                    
-                    alert(`✅ Excel file downloaded to your phone!\n\nFound ${data.routeEntries.length} route entries.\n\n📱 Check Downloads folder - opens as Excel with formatting!`);
-                    
-                } else {
-                    // Desktop: Open in new window
-                    const newWindow = window.open('', '_blank');
-                    if (newWindow) {
-                        newWindow.document.write(htmlContent);
-                        newWindow.document.close();
-                        alert(`✅ Excel-formatted route opened!\n\nFound ${data.routeEntries.length} route entries.\n\n💻 Right-click → Save As → Print`);
-                    } else {
-                        // Fallback download for desktop too
-                        const blob = new Blob([htmlContent], { type: 'application/vnd.ms-excel' });
-                        const link = document.createElement('a');
-                        link.href = URL.createObjectURL(blob);
-                        link.download = `Route_${data.routeId}_${data.currentDate.replace(/\//g, '-')}.xls`;
-                        link.click();
-                        alert(`✅ Excel file downloaded!\n\nFound ${data.routeEntries.length} route entries.`);
-                    }
+                // Create iPhone-compatible HTML file that looks like Excel
+                let htmlContent = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Route ${data.routeId} - Excel Style</title>
+<style>
+body { 
+    font-family: Arial, sans-serif; 
+    margin: 20px; 
+    background: white; 
+    color: black;
+}
+.excel-header {
+    background: #4472C4;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 16pt;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+.info-table, .route-table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 15px 0;
+}
+.info-table th, .info-table td,
+.route-table th, .route-table td {
+    border: 2px solid #000000;
+    padding: 8px;
+    text-align: center;
+    font-size: 11pt;
+}
+.info-table th, .route-table th {
+    background-color: #D9D9D9;
+    font-weight: bold;
+}
+.yellow-section {
+    background-color: #FFFF99;
+    font-weight: bold;
+    padding: 10px;
+    text-align: center;
+    border: 2px solid #000000;
+    margin: 10px 0;
+}
+.instructions {
+    background-color: #FFFF99;
+    border: 2px solid #000000;
+    padding: 10px;
+    margin: 15px 0;
+}
+.print-instruction {
+    background: #e7f3ff;
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 8px;
+    text-align: center;
+}
+@media print {
+    .print-instruction { display: none; }
+    body { margin: 0.5in; }
+}
+</style>
+</head>
+<body>
+
+<div class="print-instruction">
+<h3>📱 EXCEL-STYLE ROUTE SHEET</h3>
+<p><strong>This opens like Excel with full formatting!</strong></p>
+<p>• Use Share button to print or email</p>
+<p>• Looks professional when printed</p>
+<p>• Save to Files app for later use</p>
+</div>
+
+<div class="excel-header">THE CITY OF NEW YORK DEPARTMENT OF SANITATION</div>
+
+<table class="info-table">
+<tr>
+<th>ROUTE ID</th>
+<th>DISTRICT</th>
+<th>SECTION</th>
+<th>VEHICLE TYPE</th>
+<th>FUNCTION</th>
+<th>FREQUENCY</th>
+<th>ITSAS</th>
+<th>PHONE</th>
+<th>DATE</th>
+</tr>
+<tr>
+<td>${data.routeId}</td>
+<td>${data.district}</td>
+<td>${data.section}</td>
+<td>${data.vehicleType}</td>
+<td>${data.functionType}</td>
+<td>${data.frequency} ${data.timesPerWeek}</td>
+<td>${data.itsas}</td>
+<td>${data.phone}</td>
+<td>${data.currentDate}</td>
+</tr>
+</table>
+
+<div class="yellow-section">ROUTE 3</div>
+
+<table class="route-table">
+<tr>
+<th>ITSA</th>
+<th>SIDE</th>
+<th>STREET</th>
+<th>FROM</th>
+<th>TO</th>
+</tr>`;
+
+                // Add route entries
+                data.routeEntries.forEach(entry => {
+                    htmlContent += `
+<tr>
+<td>${entry.itsa}</td>
+<td>${entry.side}</td>
+<td>${entry.street}</td>
+<td>${entry.from}</td>
+<td>${entry.to}</td>
+</tr>`;
+                });
+
+                // Add empty rows for additional entries
+                for (let i = 0; i < 15; i++) {
+                    htmlContent += `<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>`;
                 }
+
+                htmlContent += `</table>`;
+
+                // Add section note if present
+                if (data.sectionNote) {
+                    htmlContent += `<div class="yellow-section">${data.sectionNote}</div>`;
+                }
+
+                // Add instructions
+                htmlContent += `
+<div class="instructions">
+<strong>ROUTE INSTRUCTIONS:</strong><br>
+- Complete Route in Order<br>
+- Service Appropriate Commodity on Baskets, Schools, and Drop Offs on Route<br>
+- Take and Return Tools - Wear Reflective Safety Compliant Attire
+</div>
+
+</body>
+</html>`;
+
+                // Create downloadable HTML file
+                const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `Route_${data.routeId}_${data.currentDate.replace(/\//g, '-')}.html`;
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+                
+                alert(`✅ Excel-style file downloaded!\n\nFound ${data.routeEntries.length} route entries.\n\n📱 File opens in Safari with Excel-like formatting!\n• Use Share button to print or email\n• Looks professional and print-ready`);
                 
             } catch (error) {
                 alert('Download failed. Please try "Email Route" instead.');
@@ -561,97 +680,6 @@
                 alert('Copy failed. Please try "Email Route" instead.');
                 console.error('Copy error:', error);
             }
-        }
-
-        function createFormattedHTML(data) {
-            // SAME Excel-style formatting for mobile AND desktop
-            let htmlContent = `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="ProgId" content="Excel.Sheet">
-<title>Route Export</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-table { border-collapse: collapse; width: 100%; margin: 10px 0; }
-th, td { border: 1px solid black; padding: 8px; text-align: center; font-size: 10pt; }
-th { background-color: #D9D9D9; font-weight: bold; }
-.yellow { background-color: #FFFF99; font-weight: bold; }
-.title { font-size: 14pt; font-weight: bold; text-align: center; margin: 20px 0; }
-.mobile-instructions { background: #e7f3ff; padding: 15px; margin: 20px 0; border-radius: 5px; }
-@media print { .mobile-instructions { display: none; } body { margin: 0.5in; } }
-</style>
-</head>
-<body>`;
-
-            htmlContent += `
-<div class="mobile-instructions">
-<h3>📱 FOR MOBILE USERS:</h3>
-<p><strong>This file opens as Excel with full formatting!</strong></p>
-<p>• Tap to open in Excel app or browser</p>
-<p>• Print directly or email to computer</p>
-</div>`;
-
-            htmlContent += `<div class="title">THE CITY OF NEW YORK DEPARTMENT OF SANITATION</div>`;
-            
-            htmlContent += `
-<table>
-<tr>
-<th>ROUTE ID</th><th>DISTRICT</th><th>SECTION</th><th>VEHICLE TYPE</th><th>FUNCTION</th><th>FREQUENCY</th><th>ITSAS</th><th>PHONE</th><th>DATE</th>
-</tr>
-<tr>
-<td>${data.routeId}</td>
-<td>${data.district}</td>
-<td>${data.section}</td>
-<td>${data.vehicleType}</td>
-<td>${data.functionType}</td>
-<td>${data.frequency} ${data.timesPerWeek}</td>
-<td>${data.itsas}</td>
-<td>${data.phone}</td>
-<td>${data.currentDate}</td>
-</tr>
-</table>`;
-
-            htmlContent += `<table><tr><td class="yellow" colspan="5">ROUTE 3</td></tr></table>`;
-            
-            htmlContent += `
-<table>
-<tr>
-<th>ITSA</th><th>SIDE</th><th>STREET</th><th>FROM</th><th>TO</th>
-</tr>`;
-
-            data.routeEntries.forEach(entry => {
-                htmlContent += `
-<tr>
-<td>${entry.itsa}</td>
-<td>${entry.side}</td>
-<td>${entry.street}</td>
-<td>${entry.from}</td>
-<td>${entry.to}</td>
-</tr>`;
-            });
-
-            // Add empty rows for additional entries
-            for (let i = 0; i < 15; i++) {
-                htmlContent += `<tr><td></td><td></td><td></td><td></td><td></td></tr>`;
-            }
-
-            htmlContent += `</table>`;
-
-            if (data.sectionNote) {
-                htmlContent += `<table><tr><td class="yellow" colspan="5">${data.sectionNote}</td></tr></table>`;
-            }
-
-            htmlContent += `
-<table>
-<tr><td class="yellow" colspan="5">Complete Route in Order</td></tr>
-<tr><td class="yellow" colspan="5">Service Appropriate Commodity on Baskets, Schools, and Drop Offs on Route</td></tr>
-<tr><td class="yellow" colspan="5">Take and Return Tools - Wear Reflective Safety Compliant Attire</td></tr>
-</table>
-</body>
-</html>`;
-
-            return htmlContent;
         }
 
         function showCopyModal(text, count) {
