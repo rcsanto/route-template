@@ -340,7 +340,7 @@
                 
                 <div>
                     <button class="export-btn download" onclick="downloadRoute()">📱 Download Excel-Style File</button>
-                    <div class="export-description">Downloads formatted file that opens like Excel</div>
+                    <div class="export-description">Opens formatted file that looks like Excel</div>
                 </div>
                 
                 <div>
@@ -526,7 +526,7 @@ body {
     padding: 10px;
     margin: 15px 0;
 }
-.print-instruction {
+.mobile-instruction {
     background: #e7f3ff;
     padding: 15px;
     margin: 20px 0;
@@ -534,19 +534,18 @@ body {
     text-align: center;
 }
 @media print {
-    .print-instruction { display: none; }
+    .mobile-instruction { display: none; }
     body { margin: 0.5in; }
 }
 </style>
 </head>
 <body>
 
-<div class="print-instruction">
+<div class="mobile-instruction">
 <h3>📱 EXCEL-STYLE ROUTE SHEET</h3>
-<p><strong>This opens like Excel with full formatting!</strong></p>
-<p>• Use Share button to print or email</p>
-<p>• Looks professional when printed</p>
-<p>• Save to Files app for later use</p>
+<p><strong>This is your formatted route ready for printing!</strong></p>
+<p>📍 Use Safari's Share button → Print or Add to Reading List</p>
+<p>📧 Or use Share → Mail to email to yourself</p>
 </div>
 
 <div class="excel-header">THE CITY OF NEW YORK DEPARTMENT OF SANITATION</div>
@@ -588,121 +587,3 @@ body {
 </tr>`;
 
                 // Add route entries
-                data.routeEntries.forEach(entry => {
-                    htmlContent += `
-<tr>
-<td>${entry.itsa}</td>
-<td>${entry.side}</td>
-<td>${entry.street}</td>
-<td>${entry.from}</td>
-<td>${entry.to}</td>
-</tr>`;
-                });
-
-                // Add empty rows for additional entries
-                for (let i = 0; i < 15; i++) {
-                    htmlContent += `<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>`;
-                }
-
-                htmlContent += `</table>`;
-
-                // Add section note if present
-                if (data.sectionNote) {
-                    htmlContent += `<div class="yellow-section">${data.sectionNote}</div>`;
-                }
-
-                // Add instructions
-                htmlContent += `
-<div class="instructions">
-<strong>ROUTE INSTRUCTIONS:</strong><br>
-- Complete Route in Order<br>
-- Service Appropriate Commodity on Baskets, Schools, and Drop Offs on Route<br>
-- Take and Return Tools - Wear Reflective Safety Compliant Attire
-</div>
-
-</body>
-</html>`;
-
-                // Create downloadable HTML file
-                const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = `Route_${data.routeId}_${data.currentDate.replace(/\//g, '-')}.html`;
-                link.style.display = 'none';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                
-                setTimeout(() => URL.revokeObjectURL(link.href), 1000);
-                
-                alert(`✅ Excel-style file downloaded!\n\nFound ${data.routeEntries.length} route entries.\n\n📱 File opens in Safari with Excel-like formatting!\n• Use Share button to print or email\n• Looks professional and print-ready`);
-                
-            } catch (error) {
-                alert('Download failed. Please try "Email Route" instead.');
-                console.error('Download error:', error);
-            }
-        }
-
-        function copyRoute() {
-            try {
-                const data = getRouteData();
-                
-                let routeText = `THE CITY OF NEW YORK DEPARTMENT OF SANITATION\n`;
-                routeText += `Route: ${data.routeId}\n`;
-                routeText += `District: ${data.district}\n`;
-                routeText += `Vehicle: ${data.vehicleType}\n`;
-                routeText += `Function: ${data.functionType}\n`;
-                routeText += `Date: ${data.currentDate}\n\n`;
-                
-                routeText += `ROUTE ENTRIES:\n`;
-                routeText += `ITSA | SIDE | STREET | FROM | TO\n`;
-                routeText += `----------------------------------------\n`;
-                
-                data.routeEntries.forEach(entry => {
-                    routeText += `${entry.itsa} | ${entry.side} | ${entry.street} | ${entry.from} | ${entry.to}\n`;
-                });
-                
-                if (data.sectionNote) {
-                    routeText += `\nSection Note: ${data.sectionNote}\n`;
-                }
-                
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(routeText).then(() => {
-                        alert(`✅ Route copied to clipboard!\n\nFound ${data.routeEntries.length} route entries.\n\n📋 Paste into email or document.`);
-                    }).catch(() => {
-                        showCopyModal(routeText, data.routeEntries.length);
-                    });
-                } else {
-                    showCopyModal(routeText, data.routeEntries.length);
-                }
-                
-            } catch (error) {
-                alert('Copy failed. Please try "Email Route" instead.');
-                console.error('Copy error:', error);
-            }
-        }
-
-        function showCopyModal(text, count) {
-            const modal = document.createElement('div');
-            modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
-            
-            const content = document.createElement('div');
-            content.style.cssText = 'background:white;padding:20px;border-radius:10px;max-width:90%;max-height:90%;overflow:auto;';
-            
-            content.innerHTML = `<h3>📋 Route Data (${count} entries)</h3><p><strong>Long-press text → Copy → Email to yourself</strong></p><textarea readonly style="width:100%;height:300px;font-family:monospace;font-size:12px;">${text}</textarea><button onclick="this.closest('div').remove()" style="background:#007bff;color:white;padding:10px 20px;border:none;border-radius:5px;margin-top:10px;">Close</button>`;
-            
-            modal.appendChild(content);
-            document.body.appendChild(modal);
-            
-            const textarea = content.querySelector('textarea');
-            textarea.focus();
-            textarea.select();
-        }
-
-        // Initialize with a few empty rows
-        for (let i = 0; i < 5; i++) {
-            addRow();
-        }
-    </script>
-</body>
-</html>
