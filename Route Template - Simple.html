@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<!-- saved from url=(0056)file:///C:/Users/pc/Downloads/mobile_route_template.html -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Route Template - Simple</title>
     <style>
@@ -269,84 +269,14 @@
                 </thead>
                 <tbody id="routeTableBody">
                     <!-- Rows will be added here -->
-                <tr>
-                <td><input type="number" name="itsa" placeholder="57"></td>
-                <td>
-                    <select name="side">
-                        <option value="">-</option>
-                        <option value="B">B</option>
-                        <option value="R">R</option>
-                        <option value="L">L</option>
-                    </select>
-                </td>
-                <td><input type="text" name="street" placeholder="Street Name"></td>
-                <td><input type="text" name="from" placeholder="From Address"></td>
-                <td><input type="text" name="to" placeholder="To Address"></td>
-                <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
-            </tr><tr>
-                <td><input type="number" name="itsa" placeholder="58"></td>
-                <td>
-                    <select name="side">
-                        <option value="">-</option>
-                        <option value="B">B</option>
-                        <option value="R">R</option>
-                        <option value="L">L</option>
-                    </select>
-                </td>
-                <td><input type="text" name="street" placeholder="Street Name"></td>
-                <td><input type="text" name="from" placeholder="From Address"></td>
-                <td><input type="text" name="to" placeholder="To Address"></td>
-                <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
-            </tr><tr>
-                <td><input type="number" name="itsa" placeholder="59"></td>
-                <td>
-                    <select name="side">
-                        <option value="">-</option>
-                        <option value="B">B</option>
-                        <option value="R">R</option>
-                        <option value="L">L</option>
-                    </select>
-                </td>
-                <td><input type="text" name="street" placeholder="Street Name"></td>
-                <td><input type="text" name="from" placeholder="From Address"></td>
-                <td><input type="text" name="to" placeholder="To Address"></td>
-                <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
-            </tr><tr>
-                <td><input type="number" name="itsa" placeholder="60"></td>
-                <td>
-                    <select name="side">
-                        <option value="">-</option>
-                        <option value="B">B</option>
-                        <option value="R">R</option>
-                        <option value="L">L</option>
-                    </select>
-                </td>
-                <td><input type="text" name="street" placeholder="Street Name"></td>
-                <td><input type="text" name="from" placeholder="From Address"></td>
-                <td><input type="text" name="to" placeholder="To Address"></td>
-                <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
-            </tr><tr>
-                <td><input type="number" name="itsa" placeholder="61"></td>
-                <td>
-                    <select name="side">
-                        <option value="">-</option>
-                        <option value="B">B</option>
-                        <option value="R">R</option>
-                        <option value="L">L</option>
-                    </select>
-                </td>
-                <td><input type="text" name="street" placeholder="Street Name"></td>
-                <td><input type="text" name="from" placeholder="From Address"></td>
-                <td><input type="text" name="to" placeholder="To Address"></td>
-                <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
-            </tr></tbody>
+                </tbody>
             </table>
         </div>
         
         <button class="add-row-btn" onclick="addRow()">+ Add Route Entry</button>
         
         <div class="section-highlight">
-            <input type="text" id="sectionNote" placeholder="Add section note (e.g., &#39;Including 2 Houses From 213 Street to 215 Street&#39;)">
+            <input type="text" id="sectionNote" placeholder="Add section note (e.g., 'Including 2 Houses From 213 Street to 215 Street')">
         </div>
         
         <div class="footer-notes">
@@ -357,8 +287,8 @@
         
         <div class="export-section">
             <h3>Export Options</h3>
-            <button class="export-btn" onclick="exportToExcel()">📊 Download Excel File</button>
-            <p><em>Creates a properly formatted Excel file ready for printing</em></p>
+            <button class="export-btn" onclick="exportToExcel()">📊 Export Route Data</button>
+            <p><em>Creates route data for emailing/printing</em></p>
         </div>
     </div>
 
@@ -394,70 +324,20 @@
 
         function exportToExcel() {
             try {
-                // Create Excel-compatible HTML that opens in new window
-                let htmlContent = `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Route Export</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-table { border-collapse: collapse; width: 100%; margin: 10px 0; }
-th, td { border: 1px solid black; padding: 8px; text-align: center; font-size: 10pt; }
-th { background-color: #D9D9D9; font-weight: bold; }
-.yellow { background-color: #FFFF99; font-weight: bold; }
-.title { font-size: 14pt; font-weight: bold; text-align: center; margin: 20px 0; }
-.copy-instruction { background: #e7f3ff; padding: 15px; margin: 20px 0; border-radius: 5px; }
-@media print { .copy-instruction { display: none; } body { margin: 0.5in; } }
-</style>
-</head>
-<body>`;
-
-                const routeId = document.getElementById('routeId').value || 'QE133';
-                const currentDate = new Date().toISOString().slice(0,10);
+                // Create route data as downloadable text for mobile
+                let routeText = "THE CITY OF NEW YORK DEPARTMENT OF SANITATION\n";
+                routeText += "Route ID: " + (document.getElementById('routeId').value || '') + "\n";
+                routeText += "District: " + (document.getElementById('district').value || '') + "\n";
+                routeText += "Vehicle: " + (document.getElementById('vehicleType').value || '') + "\n";
+                routeText += "Function: " + (document.getElementById('function').value || '') + "\n";
+                routeText += "Date: " + new Date().toLocaleDateString() + "\n\n";
                 
-                htmlContent += `
-<div class="copy-instruction">
-<h3>📋 HOW TO SAVE AS EXCEL:</h3>
-<p><strong>📱 On Mobile:</strong> Bookmark this page → Email link to yourself → Open on computer</p>
-<p><strong>💻 On Computer:</strong> Right-click → Save As → Save as "Route.html" → Double-click to open → Print or copy to Excel</p>
-</div>`;
+                routeText += "ROUTE ENTRIES:\n";
+                routeText += "ITSA | SIDE | STREET | FROM | TO\n";
+                routeText += "----------------------------------------\n";
                 
-                // Header
-                htmlContent += `<div class="title">THE CITY OF NEW YORK DEPARTMENT OF SANITATION</div>`;
-                
-                // Info table
-                htmlContent += `
-<table>
-<tr>
-<th>ROUTE ID</th><th>DISTRICT</th><th>SECTION</th><th>VEHICLE TYPE</th><th>FUNCTION</th><th>FREQUENCY</th><th>ITSAS</th><th>PHONE</th><th>DATE</th>
-</tr>
-<tr>
-<td>${document.getElementById('routeId').value || ''}</td>
-<td>${document.getElementById('district').value || ''}</td>
-<td>${document.getElementById('section').value || ''}</td>
-<td>${document.getElementById('vehicleType').value || ''}</td>
-<td>${document.getElementById('function').value || ''}</td>
-<td>${document.getElementById('frequency').value || ''} ${document.getElementById('timesPerWeek').value || ''}</td>
-<td>${document.getElementById('itsas').value || ''}</td>
-<td>${document.getElementById('districtPhone').value || ''}</td>
-<td>${currentDate}</td>
-</tr>
-</table>`;
-
-                // Route section
-                htmlContent += `<table><tr><td class="yellow" colspan="5">ROUTE 3</td></tr></table>`;
-                
-                htmlContent += `
-<table>
-<tr>
-<th>ITSA</th><th>SIDE</th><th>STREET</th><th>FROM</th><th>TO</th>
-</tr>`;
-
-                // Add route data
                 const tableBody = document.getElementById('routeTableBody');
                 const rows = tableBody.querySelectorAll('tr');
-                let itsaCounter = 57;
                 let entryCount = 0;
                 
                 rows.forEach(row => {
@@ -470,64 +350,48 @@ th { background-color: #D9D9D9; font-weight: bold; }
                                    (selects[0] && selects[0].value);
                     
                     if (hasData) {
-                        const itsaValue = (inputs[0] && inputs[0].value) ? inputs[0].value : itsaCounter;
-                        htmlContent += `
-<tr>
-<td>${itsaValue}</td>
-<td>${selects[0] ? selects[0].value : ''}</td>
-<td>${inputs[1] ? inputs[1].value : ''}</td>
-<td>${inputs[2] ? inputs[2].value : ''}</td>
-<td>${inputs[3] ? inputs[3].value : ''}</td>
-</tr>`;
-                        itsaCounter++;
+                        const itsaValue = inputs[0] ? inputs[0].value : '';
+                        const sideValue = selects[0] ? selects[0].value : '';
+                        const streetValue = inputs[1] ? inputs[1].value : '';
+                        const fromValue = inputs[2] ? inputs[2].value : '';
+                        const toValue = inputs[3] ? inputs[3].value : '';
+                        
+                        routeText += itsaValue + " | " + sideValue + " | " + streetValue + " | " + fromValue + " | " + toValue + "\n";
                         entryCount++;
                     }
                 });
-
-                // Add empty rows
-                for (let i = 0; i < 15; i++) {
-                    htmlContent += `<tr><td></td><td></td><td></td><td></td><td></td></tr>`;
-                }
-
-                htmlContent += `</table>`;
-
-                // Section note
-                const sectionNote = document.getElementById('sectionNote').value;
-                if (sectionNote) {
-                    htmlContent += `<table><tr><td class="yellow" colspan="5">${sectionNote}</td></tr></table>`;
-                }
-
-                // Footer
-                htmlContent += `
-<table>
-<tr><td class="yellow" colspan="5">Complete Route in Order</td></tr>
-<tr><td class="yellow" colspan="5">Service Appropriate Commodity on Baskets, Schools, and Drop Offs on Route</td></tr>
-<tr><td class="yellow" colspan="5">Take and Return Tools - Wear Reflective Safety Compliant Attire</td></tr>
-</table>
-
-</body>
-</html>`;
-
-                // Open in new window (this works from Claude artifacts)
-                const newWindow = window.open('', '_blank');
-                if (newWindow) {
-                    newWindow.document.write(htmlContent);
-                    newWindow.document.close();
-                    alert(`✅ Excel-formatted route opened in new window!\n\nFound ${entryCount} route entries.\n\n📱 On Mobile: Bookmark the new page → Email to yourself\n💻 On Computer: Right-click → Save As → Print`);
+                
+                // Mobile-friendly: Copy to clipboard and show instructions
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(routeText).then(() => {
+                        alert('✅ Route copied to clipboard!\n\n📱 MOBILE: Open email → Paste → Send to yourself\n💻 COMPUTER: Open Word → Paste → Format → Print\n\nFound ' + entryCount + ' route entries.');
+                    }).catch(() => {
+                        showMobileText(routeText, entryCount);
+                    });
                 } else {
-                    // Fallback: create data URL
-                    const dataUrl = 'data:text/html;charset=utf-8,' + encodeURIComponent(htmlContent);
-                    const link = document.createElement('a');
-                    link.href = dataUrl;
-                    link.target = '_blank';
-                    link.click();
-                    alert(`✅ Excel-formatted route created!\n\nFound ${entryCount} route entries.\n\n📱 The formatted route should open in a new tab. Bookmark it to access later!`);
+                    showMobileText(routeText, entryCount);
                 }
                 
             } catch (error) {
-                alert('Export failed: ' + error.message + '\n\nPlease try filling out the form completely.');
-                console.error('Export error:', error);
+                alert('Export failed. Please try again.');
             }
+        }
+
+        function showMobileText(text, count) {
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
+            
+            const content = document.createElement('div');
+            content.style.cssText = 'background:white;padding:20px;border-radius:10px;max-width:90%;max-height:90%;overflow:auto;';
+            
+            content.innerHTML = '<h3>📋 Route Data (' + count + ' entries)</h3><p><strong>Long-press text below → Copy → Email to yourself</strong></p><textarea readonly style="width:100%;height:300px;font-family:monospace;font-size:12px;">' + text + '</textarea><button onclick="this.closest(\'div\').remove()" style="background:#007bff;color:white;padding:10px 20px;border:none;border-radius:5px;margin-top:10px;">Close</button>';
+            
+            modal.appendChild(content);
+            document.body.appendChild(modal);
+            
+            const textarea = content.querySelector('textarea');
+            textarea.focus();
+            textarea.select();
         }
 
         // Initialize with a few empty rows
@@ -535,5 +399,5 @@ th { background-color: #D9D9D9; font-weight: bold; }
             addRow();
         }
     </script>
-
-</body></html>
+</body>
+</html>
