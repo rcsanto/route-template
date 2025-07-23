@@ -587,3 +587,120 @@ body {
 </tr>`;
 
                 // Add route entries
+                data.routeEntries.forEach(entry => {
+                    htmlContent += `
+<tr>
+<td>${entry.itsa}</td>
+<td>${entry.side}</td>
+<td>${entry.street}</td>
+<td>${entry.from}</td>
+<td>${entry.to}</td>
+</tr>`;
+                });
+
+                // Add empty rows for additional entries
+                for (let i = 0; i < 15; i++) {
+                    htmlContent += `<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>`;
+                }
+
+                htmlContent += `</table>`;
+
+                // Add section note if present
+                if (data.sectionNote) {
+                    htmlContent += `<div class="yellow-section">${data.sectionNote}</div>`;
+                }
+
+                // Add instructions
+                htmlContent += `
+<div class="instructions">
+<strong>ROUTE INSTRUCTIONS:</strong><br>
+- Complete Route in Order<br>
+- Service Appropriate Commodity on Baskets, Schools, and Drop Offs on Route<br>
+- Take and Return Tools - Wear Reflective Safety Compliant Attire
+</div>
+
+</body>
+</html>`;
+
+                // For iPhone: Open in new window instead of downloading
+                const newWindow = window.open('', '_blank');
+                if (newWindow) {
+                    newWindow.document.write(htmlContent);
+                    newWindow.document.close();
+                    alert(`✅ Excel-style route opened in new tab!\n\nFound ${data.routeEntries.length} route entries.\n\n📱 Use Safari's Share button to:\n• Print directly\n• Email to yourself\n• Add to Reading List\n• Save to Files app`);
+                } else {
+                    // Fallback: Use data URL
+                    const dataUrl = 'data:text/html;charset=utf-8,' + encodeURIComponent(htmlContent);
+                    window.open(dataUrl, '_blank');
+                    alert(`✅ Excel-style route opened!\n\nFound ${data.routeEntries.length} route entries.\n\n📱 Use Share button to print or email!`);
+                }
+                
+            } catch (error) {
+                alert('Download failed. Please try "Email Route" instead.');
+                console.error('Download error:', error);
+            }
+        }
+
+        function copyRoute() {
+            try {
+                const data = getRouteData();
+                
+                let routeText = `THE CITY OF NEW YORK DEPARTMENT OF SANITATION\n`;
+                routeText += `Route: ${data.routeId}\n`;
+                routeText += `District: ${data.district}\n`;
+                routeText += `Vehicle: ${data.vehicleType}\n`;
+                routeText += `Function: ${data.functionType}\n`;
+                routeText += `Date: ${data.currentDate}\n\n`;
+                
+                routeText += `ROUTE ENTRIES:\n`;
+                routeText += `ITSA | SIDE | STREET | FROM | TO\n`;
+                routeText += `----------------------------------------\n`;
+                
+                data.routeEntries.forEach(entry => {
+                    routeText += `${entry.itsa} | ${entry.side} | ${entry.street} | ${entry.from} | ${entry.to}\n`;
+                });
+                
+                if (data.sectionNote) {
+                    routeText += `\nSection Note: ${data.sectionNote}\n`;
+                }
+                
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(routeText).then(() => {
+                        alert(`✅ Route copied to clipboard!\n\nFound ${data.routeEntries.length} route entries.\n\n📋 Paste into email or document.`);
+                    }).catch(() => {
+                        showCopyModal(routeText, data.routeEntries.length);
+                    });
+                } else {
+                    showCopyModal(routeText, data.routeEntries.length);
+                }
+                
+            } catch (error) {
+                alert('Copy failed. Please try "Email Route" instead.');
+                console.error('Copy error:', error);
+            }
+        }
+
+        function showCopyModal(text, count) {
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
+            
+            const content = document.createElement('div');
+            content.style.cssText = 'background:white;padding:20px;border-radius:10px;max-width:90%;max-height:90%;overflow:auto;';
+            
+            content.innerHTML = `<h3>📋 Route Data (${count} entries)</h3><p><strong>Long-press text → Copy → Email to yourself</strong></p><textarea readonly style="width:100%;height:300px;font-family:monospace;font-size:12px;">${text}</textarea><button onclick="this.closest('div').remove()" style="background:#007bff;color:white;padding:10px 20px;border:none;border-radius:5px;margin-top:10px;">Close</button>`;
+            
+            modal.appendChild(content);
+            document.body.appendChild(modal);
+            
+            const textarea = content.querySelector('textarea');
+            textarea.focus();
+            textarea.select();
+        }
+
+        // Initialize with a few empty rows
+        for (let i = 0; i < 5; i++) {
+            addRow();
+        }
+    </script>
+</body>
+</html>
