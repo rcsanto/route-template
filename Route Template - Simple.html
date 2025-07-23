@@ -339,8 +339,8 @@
                 </div>
                 
                 <div>
-                    <button class="export-btn download" onclick="downloadRoute()">📱 Download File</button>
-                    <div class="export-description">Downloads Excel-style file to device</div>
+                    <button class="export-btn download" onclick="downloadRoute()">📱 Download Excel File</button>
+                    <div class="export-description">Downloads Excel-style file with formatting</div>
                 </div>
                 
                 <div>
@@ -479,55 +479,47 @@
         function downloadRoute() {
             try {
                 const data = getRouteData();
+                
+                // Create SAME Excel-formatted HTML for ALL devices (mobile and desktop)
+                let htmlContent = createFormattedHTML(data);
+                
                 const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
                 
                 if (isMobile) {
-                    // Mobile: Create simple text file
-                    let content = `THE CITY OF NEW YORK DEPARTMENT OF SANITATION\n`;
-                    content += `Route: ${data.routeId}\n`;
-                    content += `District: ${data.district}\n`;
-                    content += `Vehicle: ${data.vehicleType}\n`;
-                    content += `Function: ${data.functionType}\n`;
-                    content += `Date: ${data.currentDate}\n\n`;
-                    
-                    content += `ROUTE ENTRIES:\n`;
-                    content += `ITSA | SIDE | STREET | FROM | TO\n`;
-                    content += `----------------------------------------\n`;
-                    
-                    data.routeEntries.forEach(entry => {
-                        content += `${entry.itsa} | ${entry.side} | ${entry.street} | ${entry.from} | ${entry.to}\n`;
-                    });
-                    
-                    const blob = new Blob([content], { type: 'text/plain' });
+                    // Mobile: Direct download of Excel-formatted file
+                    const blob = new Blob([htmlContent], { type: 'application/vnd.ms-excel' });
                     const link = document.createElement('a');
                     link.href = URL.createObjectURL(blob);
-                    link.download = `Route_${data.routeId}_${data.currentDate.replace(/\//g, '-')}.txt`;
+                    link.download = `Route_${data.routeId}_${data.currentDate.replace(/\//g, '-')}.xls`;
+                    link.style.display = 'none';
+                    document.body.appendChild(link);
                     link.click();
+                    document.body.removeChild(link);
                     
-                    alert(`✅ Route file downloaded!\n\nFound ${data.routeEntries.length} route entries.\n\n📱 Check your Downloads folder.`);
+                    setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+                    
+                    alert(`✅ Excel file downloaded to your phone!\n\nFound ${data.routeEntries.length} route entries.\n\n📱 Check Downloads folder - opens as Excel with formatting!`);
                     
                 } else {
-                    // Desktop: Create formatted HTML that opens in new window
-                    let htmlContent = createFormattedHTML(data);
-                    
+                    // Desktop: Open in new window
                     const newWindow = window.open('', '_blank');
                     if (newWindow) {
                         newWindow.document.write(htmlContent);
                         newWindow.document.close();
                         alert(`✅ Excel-formatted route opened!\n\nFound ${data.routeEntries.length} route entries.\n\n💻 Right-click → Save As → Print`);
                     } else {
-                        // Fallback download
-                        const blob = new Blob([htmlContent], { type: 'text/html' });
+                        // Fallback download for desktop too
+                        const blob = new Blob([htmlContent], { type: 'application/vnd.ms-excel' });
                         const link = document.createElement('a');
                         link.href = URL.createObjectURL(blob);
-                        link.download = `Route_${data.routeId}_${data.currentDate.replace(/\//g, '-')}.html`;
+                        link.download = `Route_${data.routeId}_${data.currentDate.replace(/\//g, '-')}.xls`;
                         link.click();
-                        alert(`✅ Route file downloaded!\n\nFound ${data.routeEntries.length} route entries.`);
+                        alert(`✅ Excel file downloaded!\n\nFound ${data.routeEntries.length} route entries.`);
                     }
                 }
                 
             } catch (error) {
-                alert('Download failed. Please try "Copy Data" instead.');
+                alert('Download failed. Please try "Email Route" instead.');
                 console.error('Download error:', error);
             }
         }
@@ -572,10 +564,12 @@
         }
 
         function createFormattedHTML(data) {
+            // SAME Excel-style formatting for mobile AND desktop
             let htmlContent = `<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="ProgId" content="Excel.Sheet">
 <title>Route Export</title>
 <style>
 body { font-family: Arial, sans-serif; margin: 20px; }
@@ -584,10 +578,19 @@ th, td { border: 1px solid black; padding: 8px; text-align: center; font-size: 1
 th { background-color: #D9D9D9; font-weight: bold; }
 .yellow { background-color: #FFFF99; font-weight: bold; }
 .title { font-size: 14pt; font-weight: bold; text-align: center; margin: 20px 0; }
-@media print { body { margin: 0.5in; } }
+.mobile-instructions { background: #e7f3ff; padding: 15px; margin: 20px 0; border-radius: 5px; }
+@media print { .mobile-instructions { display: none; } body { margin: 0.5in; } }
 </style>
 </head>
 <body>`;
+
+            htmlContent += `
+<div class="mobile-instructions">
+<h3>📱 FOR MOBILE USERS:</h3>
+<p><strong>This file opens as Excel with full formatting!</strong></p>
+<p>• Tap to open in Excel app or browser</p>
+<p>• Print directly or email to computer</p>
+</div>`;
 
             htmlContent += `<div class="title">THE CITY OF NEW YORK DEPARTMENT OF SANITATION</div>`;
             
@@ -628,6 +631,7 @@ th { background-color: #D9D9D9; font-weight: bold; }
 </tr>`;
             });
 
+            // Add empty rows for additional entries
             for (let i = 0; i < 15; i++) {
                 htmlContent += `<tr><td></td><td></td><td></td><td></td><td></td></tr>`;
             }
