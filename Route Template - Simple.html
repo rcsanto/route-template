@@ -152,20 +152,57 @@
             text-align: center;
         }
         
+        .export-options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        @media (min-width: 768px) {
+            .export-options {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
         .export-btn {
             background-color: #007bff;
             color: white;
-            padding: 15px 25px;
+            padding: 15px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 16px;
-            margin: 10px;
+            font-size: 14px;
             font-weight: bold;
+            transition: background-color 0.3s;
         }
         
         .export-btn:hover {
             background-color: #0056b3;
+        }
+        
+        .export-btn.email {
+            background-color: #28a745;
+        }
+        
+        .export-btn.email:hover {
+            background-color: #218838;
+        }
+        
+        .export-btn.download {
+            background-color: #17a2b8;
+        }
+        
+        .export-btn.download:hover {
+            background-color: #138496;
+        }
+        
+        .export-btn.copy {
+            background-color: #6c757d;
+        }
+        
+        .export-btn.copy:hover {
+            background-color: #5a6268;
         }
         
         .section-highlight {
@@ -184,6 +221,12 @@
             border: 1px solid #ddd;
             border-radius: 3px;
             font-size: 16px;
+        }
+        
+        .export-description {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
         }
     </style>
 </head>
@@ -286,9 +329,27 @@
         </div>
         
         <div class="export-section">
-            <h3>Export Options</h3>
-            <button class="export-btn" onclick="exportToExcel()">📊 Export Route Data</button>
-            <p><em>Creates route data for emailing/printing</em></p>
+            <h3>📊 Export Your Route</h3>
+            <p><strong>Choose the method that works best for you:</strong></p>
+            
+            <div class="export-options">
+                <div>
+                    <button class="export-btn email" onclick="emailRoute()">📧 Email Route</button>
+                    <div class="export-description">Opens email automatically with route data</div>
+                </div>
+                
+                <div>
+                    <button class="export-btn download" onclick="downloadRoute()">📱 Download File</button>
+                    <div class="export-description">Downloads Excel-style file to device</div>
+                </div>
+                
+                <div>
+                    <button class="export-btn copy" onclick="copyRoute()">📋 Copy Data</button>
+                    <div class="export-description">Copies route text to clipboard</div>
+                </div>
+            </div>
+            
+            <p><em>💡 Try "Email Route" first - it's the easiest!</em></p>
         </div>
     </div>
 
@@ -322,69 +383,281 @@
             row.parentNode.removeChild(row);
         }
 
-        function exportToExcel() {
+        function getRouteData() {
+            // Collect all route data
+            const routeId = document.getElementById('routeId').value || 'QE133';
+            const district = document.getElementById('district').value || '';
+            const section = document.getElementById('section').value || '';
+            const vehicleType = document.getElementById('vehicleType').value || '';
+            const functionType = document.getElementById('function').value || '';
+            const frequency = document.getElementById('frequency').value || '';
+            const timesPerWeek = document.getElementById('timesPerWeek').value || '';
+            const itsas = document.getElementById('itsas').value || '';
+            const phone = document.getElementById('districtPhone').value || '';
+            const sectionNote = document.getElementById('sectionNote').value || '';
+            const currentDate = new Date().toLocaleDateString();
+            
+            // Get route entries
+            const tableBody = document.getElementById('routeTableBody');
+            const rows = tableBody.querySelectorAll('tr');
+            let routeEntries = [];
+            let itsaCounter = 57;
+            
+            rows.forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                const selects = row.querySelectorAll('select');
+                
+                const hasData = (inputs[1] && inputs[1].value.trim()) || 
+                               (inputs[2] && inputs[2].value.trim()) || 
+                               (inputs[3] && inputs[3].value.trim()) ||
+                               (selects[0] && selects[0].value);
+                
+                if (hasData) {
+                    routeEntries.push({
+                        itsa: inputs[0] ? inputs[0].value : itsaCounter,
+                        side: selects[0] ? selects[0].value : '',
+                        street: inputs[1] ? inputs[1].value : '',
+                        from: inputs[2] ? inputs[2].value : '',
+                        to: inputs[3] ? inputs[3].value : ''
+                    });
+                    itsaCounter++;
+                }
+            });
+            
+            return {
+                routeId, district, section, vehicleType, functionType, 
+                frequency, timesPerWeek, itsas, phone, sectionNote, 
+                currentDate, routeEntries
+            };
+        }
+
+        function emailRoute() {
             try {
-                // Create route data as downloadable text for mobile
-                let routeText = "THE CITY OF NEW YORK DEPARTMENT OF SANITATION\n";
-                routeText += "Route ID: " + (document.getElementById('routeId').value || '') + "\n";
-                routeText += "District: " + (document.getElementById('district').value || '') + "\n";
-                routeText += "Vehicle: " + (document.getElementById('vehicleType').value || '') + "\n";
-                routeText += "Function: " + (document.getElementById('function').value || '') + "\n";
-                routeText += "Date: " + new Date().toLocaleDateString() + "\n\n";
+                const data = getRouteData();
                 
-                routeText += "ROUTE ENTRIES:\n";
-                routeText += "ITSA | SIDE | STREET | FROM | TO\n";
-                routeText += "----------------------------------------\n";
+                // Create email subject and body
+                const subject = `Route ${data.routeId} - ${data.currentDate}`;
                 
-                const tableBody = document.getElementById('routeTableBody');
-                const rows = tableBody.querySelectorAll('tr');
-                let entryCount = 0;
+                let body = `THE CITY OF NEW YORK DEPARTMENT OF SANITATION%0D%0A`;
+                body += `Route: ${data.routeId}%0D%0A`;
+                body += `District: ${data.district}%0D%0A`;
+                body += `Vehicle: ${data.vehicleType}%0D%0A`;
+                body += `Function: ${data.functionType}%0D%0A`;
+                body += `Date: ${data.currentDate}%0D%0A%0D%0A`;
                 
-                rows.forEach(row => {
-                    const inputs = row.querySelectorAll('input');
-                    const selects = row.querySelectorAll('select');
-                    
-                    const hasData = (inputs[1] && inputs[1].value.trim()) || 
-                                   (inputs[2] && inputs[2].value.trim()) || 
-                                   (inputs[3] && inputs[3].value.trim()) ||
-                                   (selects[0] && selects[0].value);
-                    
-                    if (hasData) {
-                        const itsaValue = inputs[0] ? inputs[0].value : '';
-                        const sideValue = selects[0] ? selects[0].value : '';
-                        const streetValue = inputs[1] ? inputs[1].value : '';
-                        const fromValue = inputs[2] ? inputs[2].value : '';
-                        const toValue = inputs[3] ? inputs[3].value : '';
-                        
-                        routeText += itsaValue + " | " + sideValue + " | " + streetValue + " | " + fromValue + " | " + toValue + "\n";
-                        entryCount++;
-                    }
+                body += `ROUTE ENTRIES:%0D%0A`;
+                body += `ITSA | SIDE | STREET | FROM | TO%0D%0A`;
+                body += `----------------------------------------%0D%0A`;
+                
+                data.routeEntries.forEach(entry => {
+                    body += `${entry.itsa} | ${entry.side} | ${entry.street} | ${entry.from} | ${entry.to}%0D%0A`;
                 });
                 
-                // Mobile-friendly: Copy to clipboard and show instructions
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(routeText).then(() => {
-                        alert('✅ Route copied to clipboard!\n\n📱 MOBILE: Open email → Paste → Send to yourself\n💻 COMPUTER: Open Word → Paste → Format → Print\n\nFound ' + entryCount + ' route entries.');
-                    }).catch(() => {
-                        showMobileText(routeText, entryCount);
-                    });
-                } else {
-                    showMobileText(routeText, entryCount);
+                if (data.sectionNote) {
+                    body += `%0D%0ASection Note: ${data.sectionNote}%0D%0A`;
                 }
                 
+                body += `%0D%0AInstructions:%0D%0A`;
+                body += `• Complete Route in Order%0D%0A`;
+                body += `• Service Appropriate Commodity on Baskets, Schools, and Drop Offs on Route%0D%0A`;
+                body += `• Take and Return Tools - Wear Reflective Safety Compliant Attire%0D%0A`;
+                
+                // Create mailto link
+                const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${body}`;
+                
+                // Open email
+                window.location.href = mailtoLink;
+                
+                alert(`✅ Email opened with route data!\n\nFound ${data.routeEntries.length} route entries.\n\n📧 Send the email to yourself for printing.`);
+                
             } catch (error) {
-                alert('Export failed. Please try again.');
+                alert('Email failed. Please try "Download File" instead.');
+                console.error('Email error:', error);
             }
         }
 
-        function showMobileText(text, count) {
+        function downloadRoute() {
+            try {
+                const data = getRouteData();
+                const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                
+                if (isMobile) {
+                    // Mobile: Create simple text file
+                    let content = `THE CITY OF NEW YORK DEPARTMENT OF SANITATION\n`;
+                    content += `Route: ${data.routeId}\n`;
+                    content += `District: ${data.district}\n`;
+                    content += `Vehicle: ${data.vehicleType}\n`;
+                    content += `Function: ${data.functionType}\n`;
+                    content += `Date: ${data.currentDate}\n\n`;
+                    
+                    content += `ROUTE ENTRIES:\n`;
+                    content += `ITSA | SIDE | STREET | FROM | TO\n`;
+                    content += `----------------------------------------\n`;
+                    
+                    data.routeEntries.forEach(entry => {
+                        content += `${entry.itsa} | ${entry.side} | ${entry.street} | ${entry.from} | ${entry.to}\n`;
+                    });
+                    
+                    const blob = new Blob([content], { type: 'text/plain' });
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = `Route_${data.routeId}_${data.currentDate.replace(/\//g, '-')}.txt`;
+                    link.click();
+                    
+                    alert(`✅ Route file downloaded!\n\nFound ${data.routeEntries.length} route entries.\n\n📱 Check your Downloads folder.`);
+                    
+                } else {
+                    // Desktop: Create formatted HTML that opens in new window
+                    let htmlContent = createFormattedHTML(data);
+                    
+                    const newWindow = window.open('', '_blank');
+                    if (newWindow) {
+                        newWindow.document.write(htmlContent);
+                        newWindow.document.close();
+                        alert(`✅ Excel-formatted route opened!\n\nFound ${data.routeEntries.length} route entries.\n\n💻 Right-click → Save As → Print`);
+                    } else {
+                        // Fallback download
+                        const blob = new Blob([htmlContent], { type: 'text/html' });
+                        const link = document.createElement('a');
+                        link.href = URL.createObjectURL(blob);
+                        link.download = `Route_${data.routeId}_${data.currentDate.replace(/\//g, '-')}.html`;
+                        link.click();
+                        alert(`✅ Route file downloaded!\n\nFound ${data.routeEntries.length} route entries.`);
+                    }
+                }
+                
+            } catch (error) {
+                alert('Download failed. Please try "Copy Data" instead.');
+                console.error('Download error:', error);
+            }
+        }
+
+        function copyRoute() {
+            try {
+                const data = getRouteData();
+                
+                let routeText = `THE CITY OF NEW YORK DEPARTMENT OF SANITATION\n`;
+                routeText += `Route: ${data.routeId}\n`;
+                routeText += `District: ${data.district}\n`;
+                routeText += `Vehicle: ${data.vehicleType}\n`;
+                routeText += `Function: ${data.functionType}\n`;
+                routeText += `Date: ${data.currentDate}\n\n`;
+                
+                routeText += `ROUTE ENTRIES:\n`;
+                routeText += `ITSA | SIDE | STREET | FROM | TO\n`;
+                routeText += `----------------------------------------\n`;
+                
+                data.routeEntries.forEach(entry => {
+                    routeText += `${entry.itsa} | ${entry.side} | ${entry.street} | ${entry.from} | ${entry.to}\n`;
+                });
+                
+                if (data.sectionNote) {
+                    routeText += `\nSection Note: ${data.sectionNote}\n`;
+                }
+                
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(routeText).then(() => {
+                        alert(`✅ Route copied to clipboard!\n\nFound ${data.routeEntries.length} route entries.\n\n📋 Paste into email or document.`);
+                    }).catch(() => {
+                        showCopyModal(routeText, data.routeEntries.length);
+                    });
+                } else {
+                    showCopyModal(routeText, data.routeEntries.length);
+                }
+                
+            } catch (error) {
+                alert('Copy failed. Please try "Email Route" instead.');
+                console.error('Copy error:', error);
+            }
+        }
+
+        function createFormattedHTML(data) {
+            let htmlContent = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Route Export</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 20px; }
+table { border-collapse: collapse; width: 100%; margin: 10px 0; }
+th, td { border: 1px solid black; padding: 8px; text-align: center; font-size: 10pt; }
+th { background-color: #D9D9D9; font-weight: bold; }
+.yellow { background-color: #FFFF99; font-weight: bold; }
+.title { font-size: 14pt; font-weight: bold; text-align: center; margin: 20px 0; }
+@media print { body { margin: 0.5in; } }
+</style>
+</head>
+<body>`;
+
+            htmlContent += `<div class="title">THE CITY OF NEW YORK DEPARTMENT OF SANITATION</div>`;
+            
+            htmlContent += `
+<table>
+<tr>
+<th>ROUTE ID</th><th>DISTRICT</th><th>SECTION</th><th>VEHICLE TYPE</th><th>FUNCTION</th><th>FREQUENCY</th><th>ITSAS</th><th>PHONE</th><th>DATE</th>
+</tr>
+<tr>
+<td>${data.routeId}</td>
+<td>${data.district}</td>
+<td>${data.section}</td>
+<td>${data.vehicleType}</td>
+<td>${data.functionType}</td>
+<td>${data.frequency} ${data.timesPerWeek}</td>
+<td>${data.itsas}</td>
+<td>${data.phone}</td>
+<td>${data.currentDate}</td>
+</tr>
+</table>`;
+
+            htmlContent += `<table><tr><td class="yellow" colspan="5">ROUTE 3</td></tr></table>`;
+            
+            htmlContent += `
+<table>
+<tr>
+<th>ITSA</th><th>SIDE</th><th>STREET</th><th>FROM</th><th>TO</th>
+</tr>`;
+
+            data.routeEntries.forEach(entry => {
+                htmlContent += `
+<tr>
+<td>${entry.itsa}</td>
+<td>${entry.side}</td>
+<td>${entry.street}</td>
+<td>${entry.from}</td>
+<td>${entry.to}</td>
+</tr>`;
+            });
+
+            for (let i = 0; i < 15; i++) {
+                htmlContent += `<tr><td></td><td></td><td></td><td></td><td></td></tr>`;
+            }
+
+            htmlContent += `</table>`;
+
+            if (data.sectionNote) {
+                htmlContent += `<table><tr><td class="yellow" colspan="5">${data.sectionNote}</td></tr></table>`;
+            }
+
+            htmlContent += `
+<table>
+<tr><td class="yellow" colspan="5">Complete Route in Order</td></tr>
+<tr><td class="yellow" colspan="5">Service Appropriate Commodity on Baskets, Schools, and Drop Offs on Route</td></tr>
+<tr><td class="yellow" colspan="5">Take and Return Tools - Wear Reflective Safety Compliant Attire</td></tr>
+</table>
+</body>
+</html>`;
+
+            return htmlContent;
+        }
+
+        function showCopyModal(text, count) {
             const modal = document.createElement('div');
             modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
             
             const content = document.createElement('div');
             content.style.cssText = 'background:white;padding:20px;border-radius:10px;max-width:90%;max-height:90%;overflow:auto;';
             
-            content.innerHTML = '<h3>📋 Route Data (' + count + ' entries)</h3><p><strong>Long-press text below → Copy → Email to yourself</strong></p><textarea readonly style="width:100%;height:300px;font-family:monospace;font-size:12px;">' + text + '</textarea><button onclick="this.closest(\'div\').remove()" style="background:#007bff;color:white;padding:10px 20px;border:none;border-radius:5px;margin-top:10px;">Close</button>';
+            content.innerHTML = `<h3>📋 Route Data (${count} entries)</h3><p><strong>Long-press text → Copy → Email to yourself</strong></p><textarea readonly style="width:100%;height:300px;font-family:monospace;font-size:12px;">${text}</textarea><button onclick="this.closest('div').remove()" style="background:#007bff;color:white;padding:10px 20px;border:none;border-radius:5px;margin-top:10px;">Close</button>`;
             
             modal.appendChild(content);
             document.body.appendChild(modal);
